@@ -1,301 +1,211 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Арбитражный калькулятор PRO</title>
+<meta charset="UTF-8" />
+<title>Подсчет прибыли</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif;}
-body{background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh;padding:20px;}
-.container{max-width:1400px;margin:0 auto;background:white;border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,0.2);overflow:hidden;}
-header{background:#2c3e50;color:white;padding:20px;text-align:center;}
-h1{font-size:24px;margin-bottom:10px;}
-.subtitle{opacity:0.8;font-size:14px;}
-.main-content{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:20px;}
-@media(max-width:768px){.main-content{grid-template-columns:1fr;}}
-.card{background:#f8f9fa;border-radius:10px;padding:20px;box-shadow:0 4px 6px rgba(0,0,0,0.1);}
-.card h2{color:#2c3e50;margin-bottom:15px;font-size:18px;border-bottom:2px solid #3498db;padding-bottom:8px;}
-.input-group{margin-bottom:15px;}
-label{display:block;margin-bottom:5px;font-weight:600;color:#34495e;}
-input, select{width:100%;padding:10px;border:2px solid #bdc3c7;border-radius:5px;font-size:16px;transition:border-color 0.3s;}
-input:focus, select:focus{border-color:#3498db;outline:none;}
-button{background:#3498db;color:white;border:none;padding:8px 12px;border-radius:5px;cursor:pointer;font-size:14px;font-weight:600;transition:background 0.3s;margin:2px;}
-button:hover{background:#2980b9;}
-button.secondary{background:#95a5a6;}
-button.secondary:hover{background:#7f8c8d;}
-button.danger{background:#e74c3c;}
-button.danger:hover{background:#c0392b;}
-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:14px;}
-th, td{padding:6px 8px;text-align:center;border:1px solid #ddd;}
-th{background:#34495e;color:white;position:sticky;top:0;}
-tr:nth-child(even){background:#f2f2f2;}
-.summary{background:#e8f4fc;padding:15px;border-radius:8px;margin-top:15px;}
-.history-table{max-height:400px;overflow-y:auto;}
-.progress-bar{width:100%;background:#ddd;border-radius:5px;height:20px;margin-bottom:10px;overflow:hidden;}
-.progress-fill{height:100%;background:#27ae60;width:0%;transition:width 0.3s;}
-.circle-btn{margin:2px;padding:3px 6px;border-radius:4px;border:none;cursor:pointer;font-size:12px;}
-.completed{background:#27ae60;color:white;}
-.skipped{background:#e74c3c;color:white;}
-.pending{background:#3498db;color:white;}
-.card-section{margin-bottom:20px;}
-#dayDetailModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;justify-content:center;align-items:center;}
-#dayDetailContent{background:white;padding:20px;border-radius:10px;max-height:90%;overflow-y:auto;width:90%;}
-#dayDetailContent h3{margin-bottom:10px;}
-.close-modal{background:#e74c3c;color:white;padding:5px 10px;border:none;border-radius:5px;cursor:pointer;margin-bottom:10px;}
+  body {
+    font-family: system-ui, sans-serif;
+    max-width: 1000px;
+    margin: 20px auto;
+    background: #f8f9fb;
+    color: #333;
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  h2 {
+    margin-top: 30px;
+    color: #222;
+  }
+
+  .section {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-top: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+
+  .row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  input[type="text"] {
+    flex: 1;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+
+  input[type="number"] {
+    width: 120px;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+
+  button {
+    padding: 6px 10px;
+    border: none;
+    background: #007bff;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: #005fcc;
+  }
+
+  .total {
+    font-weight: bold;
+    margin-top: 10px;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .profit-box {
+    font-weight: bold;
+    background: #e8f5e9;
+    border: 1px solid #c8e6c9;
+    color: #2e7d32;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 1.1em;
+  }
+
+  .label {
+    min-width: 120px;
+    align-self: center;
+  }
 </style>
 </head>
 <body>
-<div class="container">
-<header>
-<h1>💰 Арбитражный калькулятор PRO</h1>
-<div class="subtitle">Интерактивные круги по картам, история только для просмотра, недельный лимит по имени карты</div>
-</header>
 
-<div class="main-content">
-<div class="card" style="grid-column:1/3;">
-<h2>Карты и круги</h2>
-<div id="cardsContainer"></div>
-<button onclick="addCard()" style="margin-top:10px;">➕ Добавить карту (макс 10)</button>
-<button onclick="addDayToHistory()" style="margin-top:10px;">✅ Завершить день и добавить в историю</button>
-</div>
+<h1>Подсчет прибыли</h1>
 
-<div class="card">
-<h2>История дней</h2>
-<div class="history-table">
-<table id="historyTable">
-<thead>
-<tr>
-<th>Дата</th>
-<th>Карт</th>
-<th>Кругов всего</th>
-<th>Прибыль</th>
-<th>Деньги по картам</th>
-<th>Действия</th>
-</tr>
-</thead>
-<tbody></tbody>
-</table>
-</div>
-<button onclick="clearHistory()" class="danger">Очистить историю</button>
-<button onclick="exportHistory()" class="secondary">Экспорт в CSV</button>
-</div>
-</div>
+<!-- === СТАРТ === -->
+<h2>Старт</h2>
+<div id="start" class="section">
+  <div class="row">
+    <input type="text" placeholder="Название (например, Bybit)" value="Bybit" class="start-name" />
+    <input type="number" class="start-value" value="0" />
+  </div>
+  <div class="row">
+    <input type="text" placeholder="Название (например, VP)" value="VP" class="start-name" />
+    <input type="number" class="start-value" value="0" />
+  </div>
+  <button onclick="addRow('start', 'start-name', 'start-value')">Добавить площадку/биржу</button>
+  <div class="total">Итого старт: <span id="start-total">0</span></div>
 </div>
 
-<div id="dayDetailModal">
-<div id="dayDetailContent">
-<button class="close-modal" onclick="closeDayDetail()">Закрыть</button>
-<div id="dayDetailTables"></div>
+<!-- === РАСХОДЫ + ДОХОДЫ В КОЛОНКУ === -->
+<div class="grid-2">
+  <div>
+    <h2>Расходы</h2>
+    <div id="expenses" class="section">
+      <button onclick="addRow('expenses', 'expense-name', 'expense-value')">Добавить расход</button>
+      <div class="total">Итого расходы: <span id="expenses-total">0</span></div>
+    </div>
+  </div>
+
+  <div>
+    <h2>Доходы</h2>
+    <div id="incomes" class="section">
+      <button onclick="addRow('incomes', 'income-name', 'income-value')">Добавить доход</button>
+      <div class="total">Итого доходы: <span id="incomes-total">0</span></div>
+    </div>
+  </div>
 </div>
+
+<!-- === КОНЕЦ === -->
+<h2>Конец</h2>
+<div id="end" class="section">
+  <div class="row">
+    <input type="text" placeholder="Название (например, Bybit)" value="Bybit" class="end-name" />
+    <input type="number" class="end-value" value="0" />
+  </div>
+  <div class="row">
+    <input type="text" placeholder="Название (например, VP)" value="VP" class="end-name" />
+    <input type="number" class="end-value" value="0" />
+  </div>
+  <button onclick="addRow('end', 'end-name', 'end-value')">Добавить площадку/биржу</button>
+  <div class="total">Итого конец: <span id="end-total">0</span></div>
+</div>
+
+<!-- === АКТИВНЫЕ ЗАЯВКИ === -->
+<h2>Активные заявки</h2>
+<div id="orders" class="section">
+  <button onclick="addRow('orders', 'order-name', 'order-value')">Добавить заявку</button>
+  <div class="total">Итого активные заявки: <span id="orders-total">0</span></div>
+</div>
+
+<!-- === РЕЗУЛЬТАТ === -->
+<h2>Результат</h2>
+<div class="profit-box">
+    ПЕРЕД ОТПРАВОЙ В ОТЧЕТ ПЕРЕПРОВЕРЯЙТЕ СХОДИТСЯ ЛИ ЭТО С ВАШИМИ ПОДСЧЕТАМИ, ДАННЫЕ ПОСЧИТАННЫЕ ТУТ МОГУТ БЫТЬ НЕ ВЕРНЫМИ
+    <br><br>
+  Прибыль = (Конец - Начало) + Расходы - Доходы + Активные заявки  
+  <br><br>
+  Итого прибыль: <span id="profit">0</span>
 </div>
 
 <script>
-let cards=[];
-let history = JSON.parse(localStorage.getItem('arbitrageHistory')) || [];
-const WEEKLY_LIMIT = 400000;
-
-document.addEventListener('DOMContentLoaded',()=>{
-    updateCardsUI();
-    updateHistoryTable();
-});
-
-function addCard(){
-    if(cards.length>=10){alert('Максимум 10 карт!'); return;}
-    const card={name:'Карта '+(cards.length+1),startCapital:21000,alreadyUsed:0,entryRate:81,exitRate:93,dailyLimit:60000,flexLimit:10000,circles:[],usageHistory:[]};
-    cards.push(card);
-    updateCardsUI();
+function addRow(sectionId, nameClass, valueClass) {
+  const section = document.getElementById(sectionId);
+  const row = document.createElement('div');
+  row.className = 'row';
+  row.innerHTML = `
+    <input type="text" class="${nameClass}" placeholder="Название" />
+    <input type="number" class="${valueClass}" value="0" />
+  `;
+  section.insertBefore(row, section.querySelector('.total'));
+  attachListeners();
 }
 
-function updateCardsUI(){
-    const container=document.getElementById('cardsContainer');
-    container.innerHTML='';
-    cards.forEach((card,index)=>{
-        const div=document.createElement('div');
-        div.className='card-section';
-        div.innerHTML=`
-        <h3>Название карты <input type="text" value="${card.name}" oninput="cardUpdate(${index},'name',this.value)" style="width:200px;"></h3>
-        <div class="input-group"><label>Начальный капитал (руб)</label><input type="number" value="${card.startCapital}" oninput="cardUpdate(${index},'startCapital',this.value)"></div>
-        <div class="input-group"><label>Уже использовано (руб)</label><input type="number" value="${card.alreadyUsed}" oninput="cardUpdate(${index},'alreadyUsed',this.value)"></div>
-        <div class="flex-group">
-        <div class="input-group"><label>Курс входа (RUB/USDT)</label><input type="number" step="0.01" value="${card.entryRate}" oninput="cardUpdate(${index},'entryRate',this.value)"></div>
-        <div class="input-group"><label>Курс выхода (RUB/USDT)</label><input type="number" step="0.01" value="${card.exitRate}" oninput="cardUpdate(${index},'exitRate',this.value)"></div>
-        </div>
-        <div class="flex-group">
-        <div class="input-group"><label>Дневной лимит (руб)</label><input type="number" value="${card.dailyLimit}" oninput="cardUpdate(${index},'dailyLimit',this.value)"></div>
-        <div class="input-group"><label>Гибкий лимит ± (руб)</label><input type="number" value="${card.flexLimit}" oninput="cardUpdate(${index},'flexLimit',this.value)"></div>
-        </div>
-        <button onclick="calculateCardCircles(${index})">Рассчитать круги</button>
-        <div class="progress-bar"><div class="progress-fill" id="progress-${index}"></div></div>
-        <table style="width:100%;margin-top:10px;" id="table-${index}">
-        <thead><tr><th>Круг</th><th>Вход</th><th>Вход USDT</th><th>Выход</th><th>Доход</th><th>Статус</th></tr></thead>
-        <tbody></tbody>
-        </table>
-        <div id="limitWarning-${index}" class="warning" style="display:none;"></div>
-        `;
-        container.appendChild(div);
-        renderCardTable(index);
-    });
+function sumInputs(selector) {
+  return Array.from(document.querySelectorAll(selector))
+    .reduce((sum, input) => sum + (parseFloat(input.value) || 0), 0);
 }
 
-function cardUpdate(index,field,value){
-    cards[index][field]=field==='name'?value:parseFloat(value);
-    if(['startCapital','alreadyUsed','entryRate','exitRate','dailyLimit','flexLimit'].includes(field)) calculateCardCircles(index);
+function recalc() {
+  const startTotal = sumInputs('.start-value');
+  const endTotal = sumInputs('.end-value');
+  const expensesTotal = sumInputs('.expense-value');
+  const incomesTotal = sumInputs('.income-value');
+  const ordersTotal = sumInputs('.order-value');
+
+  document.getElementById('start-total').textContent = startTotal.toFixed(2);
+  document.getElementById('end-total').textContent = endTotal.toFixed(2);
+  document.getElementById('expenses-total').textContent = expensesTotal.toFixed(2);
+  document.getElementById('incomes-total').textContent = incomesTotal.toFixed(2);
+  document.getElementById('orders-total').textContent = ordersTotal.toFixed(2);
+
+  const profit = (endTotal - startTotal) + expensesTotal - incomesTotal + ordersTotal;
+  document.getElementById('profit').textContent = profit.toFixed(2);
 }
 
-function calculateCardCircles(index){
-    const card=cards[index];
-    const maxAllowed=card.dailyLimit+card.flexLimit;
-    let currentUsed=card.alreadyUsed;
-    let currentCapital=card.startCapital;
-    let circles=[];
-    let circleNumber=1;
-
-    // Рассчитываем недельный лимит на основе истории
-    const today=new Date();
-    const weekUsage=history.reduce((acc,day)=>{
-        day.data.forEach(c=>{
-            if(c.name===card.name){
-                const dayDate=new Date(day.date.split('.').reverse().join('-')); // преобразуем dd.mm.yyyy в Date
-                const diff=(today-dayDate)/1000/60/60/24;
-                if(diff<=7){
-                    const amount=c.circles.reduce((s,cr)=>s+cr.input,0);
-                    acc+=amount;
-                }
-            }
-        });
-        return acc;
-    },0);
-
-    while(currentUsed+currentCapital<=maxAllowed && currentCapital>100){
-        if(weekUsage+currentUsed+currentCapital>WEEKLY_LIMIT){
-            document.getElementById(`limitWarning-${index}`).style.display='block';
-            const remaining=WEEKLY_LIMIT-weekUsage-currentUsed;
-            document.getElementById(`limitWarning-${index}`).textContent=`⚠️ Превышен недельный лимит по карте "${card.name}". Можно использовать ещё ${remaining.toFixed(2)} руб`;
-            break;
-        }else{
-            document.getElementById(`limitWarning-${index}`).style.display='none';
-        }
-
-        const input=currentCapital;
-        const inputUSDT=input/card.entryRate;
-        const output=inputUSDT*card.exitRate;
-        const profit=output-input;
-        circles.push({circle:circleNumber,input,inputUSDT,output,profit,status:'pending'});
-        currentUsed+=input;
-        currentCapital=output;
-        circleNumber++;
-        if(circleNumber>50) break;
-    }
-
-    card.circles=circles;
-    renderCardTable(index);
-    updateProgressBar(index);
+function attachListeners() {
+  document.querySelectorAll('input[type="number"]').forEach(input => {
+    input.removeEventListener('input', recalc);
+    input.addEventListener('input', recalc);
+  });
 }
 
-
-function renderCardTable(index){
-    const card=cards[index];
-    const tbody=document.getElementById('table-'+index).getElementsByTagName('tbody')[0];
-    tbody.innerHTML='';
-    card.circles.forEach((c,i)=>{
-        const row=tbody.insertRow();
-        row.insertCell(0).textContent=c.circle;
-        row.insertCell(1).textContent=c.input.toFixed(2);
-        row.insertCell(2).textContent=c.inputUSDT.toFixed(4);
-        row.insertCell(3).textContent=c.output.toFixed(2);
-        row.insertCell(4).textContent=c.profit.toFixed(2);
-        const statusCell=row.insertCell(5);
-        const btn=document.createElement('button');
-        btn.className='circle-btn '+(c.status==='pending'?'pending':c.status==='completed'?'completed':'skipped');
-        btn.textContent=c.status==='pending'?'⏺':c.status==='completed'?'✅':'⏭';
-        btn.onclick=()=>{
-            if(c.status==='pending') c.status='completed';
-            else if(c.status==='completed') c.status='skipped';
-            else c.status='pending';
-            renderCardTable(index);
-            updateProgressBar(index);
-        };
-        statusCell.appendChild(btn);
-    });
-}
-
-function updateProgressBar(index){
-    const card=cards[index];
-    const total=card.circles.length;
-    const done=card.circles.filter(c=>c.status==='completed'||c.status==='skipped').length;
-    const perc=total===0?0:(done/total)*100;
-    document.getElementById('progress-'+index).style.width=perc+'%';
-}
-
-function addDayToHistory(){
-    const date=new Date().toLocaleDateString('ru-RU');
-    const totalCircles=cards.reduce((acc,c)=>acc+c.circles.length,0);
-    const totalProfit=cards.reduce((acc,c)=>acc+c.circles.reduce((p,cr)=>p+cr.profit,0),0);
-    const day={date,cards:cards.length,circles:totalCircles,profit:totalProfit.toFixed(2),data:JSON.parse(JSON.stringify(cards))};
-    // добавляем в usageHistory для недельного лимита
-    const todayDateStr=new Date().toISOString();
-    cards.forEach(c=>{
-        const amountUsed=c.circles.reduce((s,cr)=>s+cr.input,0);
-        c.usageHistory.push({date:todayDateStr,amount:amountUsed});
-    });
-    history.push(day);
-    localStorage.setItem('arbitrageHistory',JSON.stringify(history));
-    updateHistoryTable();
-    alert('День завершён и добавлен в историю!');
-}
-
-function updateHistoryTable(){
-    const tbody=document.getElementById('historyTable').getElementsByTagName('tbody')[0];
-    tbody.innerHTML='';
-    history.forEach((day,index)=>{
-        const row=tbody.insertRow();
-        row.insertCell(0).textContent=day.date;
-        row.insertCell(1).textContent=day.cards;
-        row.insertCell(2).textContent=day.circles;
-        row.insertCell(3).textContent=day.profit;
-        const moneyPerCard=day.data.map(c=>c.circles.reduce((acc,cr)=>acc+cr.input,0).toFixed(2));
-        row.insertCell(4).textContent=moneyPerCard.join(' | ');
-        const btnCell=row.insertCell(5);
-        const btn=document.createElement('button');
-        btn.className='secondary';
-        btn.textContent='Просмотр';
-        btn.onclick=()=> viewDayDetail(index);
-        btnCell.appendChild(btn);
-    });
-}
-
-function viewDayDetail(index){
-    const day=history[index];
-    const container=document.getElementById('dayDetailTables');
-    container.innerHTML='';
-    day.data.forEach(card=>{
-        const table=document.createElement('table');
-        table.style.width='100%';
-        table.style.marginBottom='15px';
-        const thead=document.createElement('thead');
-        thead.innerHTML='<tr><th>Круг</th><th>Вход</th><th>Вход USDT</th><th>Выход</th><th>Доход</th></tr>';
-        table.appendChild(thead);
-        const tbody=document.createElement('tbody');
-        card.circles.forEach(c=>{
-            const row=tbody.insertRow();
-            row.insertCell(0).textContent=c.circle;
-            row.insertCell(1).textContent=c.input.toFixed(2);
-            row.insertCell(2).textContent=c.inputUSDT.toFixed(4);
-            row.insertCell(3).textContent=c.output.toFixed(2);
-            row.insertCell(4).textContent=c.profit.toFixed(2);
-        });
-        table.appendChild(tbody);
-        const h3=document.createElement('h3');
-        h3.textContent=card.name;
-        container.appendChild(h3);
-        container.appendChild(table);
-    });
-    document.getElementById('dayDetailModal').style.display='flex';
-}
-
-function closeDayDetail(){document.getElementById('dayDetailModal').style.display='none';}
-function clearHistory(){if(confirm('Вы уверены, что хотите очистить историю?')){history=[];localStorage.removeItem('arbitrageHistory');updateHistoryTable();}}
-function exportHistory(){if(history.length===0){alert('История пуста!');return;}let csv='Дата;Карт;Кругов всего;Прибыль;Деньги по картам\n';history.forEach(d=>{const moneyPerCard=d.data.map(c=>c.circles.reduce((acc,cr)=>acc+cr.input,0).toFixed(2));csv+=`${d.date};${d.cards};${d.circles};${d.profit};${moneyPerCard.join(' | ')}\n`;});const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.setAttribute('download','арбитражная_история.csv');link.style.visibility='hidden';document.body.appendChild(link);link.click();document.body.removeChild(link);}
+attachListeners();
 </script>
+
 </body>
 </html>
